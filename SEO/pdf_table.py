@@ -6,36 +6,30 @@ from reportlab.lib.styles import getSampleStyleSheet
 
 import csv
 
-doc = SimpleDocTemplate("table.pdf", pagesize=A4, rightMargin=30,leftMargin=30, topMargin=30,bottomMargin=18)
+doc = SimpleDocTemplate("output.pdf", pagesize=A4, rightMargin=30,leftMargin=30, topMargin=30,bottomMargin=18)
 doc.pagesize = landscape(A4)
 elements = []
 
-# Raw data
-# Input your data here
+
 raw = [[100, 0, 20, 80],
 			[0, 100, 0, 50], 
 			[20, 0, 100, 0],
 			[80, 50, 0, 100]]
 
-# Add column and row names as "Page <number>"
 data = raw
-header = ["X"]
+header = [""]
 for x in range(len(data)):
-	s = "Page " + str(x + 1)
+	s = "URL " + str(x + 1)
 	header.append(s)
 	data[x].insert(0, s)
 data.insert(0, header)
 
-# ----------------------------------------- Sneaky write CSV 
+
 # Write csv with column & row names
 with open("table.csv", "w", newline = "") as f:
     writer = csv.writer(f)
     writer.writerows(data)
-# Write csv with only raw data
-with open("raw_table.csv", "w", newline = "") as f:
-    writer = csv.writer(f)
-    writer.writerows(raw)
-# ----------------------------------------- /Sneaky write CSV 
+
 
 # Define a style for the entire table
 # See documentation @ https://www.reportlab.com/docs/reportlab-userguide.pdf page 84
