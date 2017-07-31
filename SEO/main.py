@@ -12,6 +12,13 @@ import csv
 import string
 import re
 
+############################
+############################    GLOBAL VARIABLES
+############################
+
+SKETCH_SIZE_MINIMUM = 200
+SKETCH_SIZE_MAXIMUM_PERCENTAGE = 0.25
+
 
 ############################
 ############################    INPUT
@@ -81,6 +88,8 @@ def get_kgrams_from_user_inputs():
     #    for gram in urls_kgrams[pages] :
     #        print(gram)
 
+
+
     return urls_kgrams;
 
 
@@ -126,8 +135,10 @@ def make_output(raw_data):
         # x > 0 && Y > 0 are so we don't parse row / column names
         for x in range(len(data)):
             for y in range(len(data[x])):
-                if (x > 0 and y > 0 and str(data[x][y]) != "" and data[x][y] >= 0.8):
+                print("data " + str(data[x][y]))
+                if (x > 0 and y > 0 and str(data[x][y]) != "" and float(data[x][y]) >= 0.8):
                     t.setStyle(TableStyle([('TEXTCOLOR', (x, y), (x, y), colors.red)]))
+                    print("IN")
 
         doc = SimpleDocTemplate("output.pdf", pagesize=A4, rightMargin=30,leftMargin=30, topMargin=30,bottomMargin=18)
         doc.pagesize = landscape(A4)
@@ -148,13 +159,37 @@ def make_output(raw_data):
 ############################
 
 def compute_duplicate_rates(urls_kgrams):
-    # computes the duplicate rate between two urls
-    # Inputs: the urls' kgrams
-    # Output: number between 0 and 1
-    def compute_duplicate_rate_between_two_urls(kgram1, kgram2):
+
+    # For time optimisation purposes we only keep a randomly chosen subset of all the shingles, called sketches
+    def get_urls_sketches(urls_kgrams):
         return;
+
+    # computes the duplicate rate between two urls
+    # Inputs: the urls' sketches
+    # Output: number between 0 and 1
+    def compute_duplicate_rate_between_two_urls(sketch1, sketch2):
+        return 2.1;
+
+
+
+    urls_sketches = urls_kgrams #get_urls_sketches(urls_kgrams)
     raw_data = []
-    for ...
+
+
+    loop1_count = 0
+    for url1, sketch1 in urls_sketches.items():
+        loop1_count += 1
+        line = []
+        loop2_count = 0
+        for url2, sketch2 in urls_sketches.items():
+            loop2_count += 1
+            if loop2_count > loop1_count:
+                line.insert(loop2_count - 1, compute_duplicate_rate_between_two_urls(sketch1, sketch2))
+            else :
+                line.insert(loop2_count - 1, "")
+        raw_data.append(line)
+
+
     return raw_data;
 
 
@@ -178,11 +213,4 @@ raw_data = compute_duplicate_rates(urls_kgrams)
 
 make_output(raw_data)
 
-
-
-
-
-
-
-#print(len(urls_kgrams))
 print("END")
