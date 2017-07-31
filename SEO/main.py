@@ -68,6 +68,19 @@ for url in urls :
 
 
 #display
-for pages in pagesGrams :
-    for gram in pagesGrams[pages] :
-        print(gram)
+#for pages in pagesGrams :
+#    for gram in pagesGrams[pages] :
+#        print(gram)
+
+
+
+
+
+
+# computes the duplicate rate between two urls
+# Inputs: the urls' kgrams
+# Output: number between 0 and 1
+def compute_duplicate_rate_between_two_urls(kgram1, kgram2):
+    return;
+
+print(len(pagesGrams))
