@@ -135,10 +135,8 @@ def make_output(raw_data):
         # x > 0 && Y > 0 are so we don't parse row / column names
         for x in range(len(data)):
             for y in range(len(data[x])):
-                print("data " + str(data[x][y]))
-                if (x > 0 and y > 0 and str(data[x][y]) != "" and float(data[x][y]) >= 0.8):
+                if (x > 0 and y > 0 and str(data[x][y]) != "X" and float(data[x][y]) >= 0.8):
                     t.setStyle(TableStyle([('TEXTCOLOR', (x, y), (x, y), colors.red)]))
-                    print("IN")
 
         doc = SimpleDocTemplate("output.pdf", pagesize=A4, rightMargin=30,leftMargin=30, topMargin=30,bottomMargin=18)
         doc.pagesize = landscape(A4)
@@ -186,7 +184,7 @@ def compute_duplicate_rates(urls_kgrams):
             if loop2_count > loop1_count:
                 line.insert(loop2_count - 1, compute_duplicate_rate_between_two_urls(sketch1, sketch2))
             else :
-                line.insert(loop2_count - 1, "")
+                line.insert(loop2_count - 1, "X")
         raw_data.append(line)
 
 
