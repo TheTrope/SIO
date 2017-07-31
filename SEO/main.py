@@ -126,7 +126,7 @@ def make_output(raw_data):
         # x > 0 && Y > 0 are so we don't parse row / column names
         for x in range(len(data)):
             for y in range(len(data[x])):
-                if (x > 0 and y > 0 and int(data[x][y]) > 50):
+                if (x > 0 and y > 0 and str(data[x][y]) != "" and data[x][y] >= 0.8):
                     t.setStyle(TableStyle([('TEXTCOLOR', (x, y), (x, y), colors.red)]))
 
         doc = SimpleDocTemplate("output.pdf", pagesize=A4, rightMargin=30,leftMargin=30, topMargin=30,bottomMargin=18)
@@ -147,16 +147,15 @@ def make_output(raw_data):
 ############################    COMPUTATION
 ############################
 
-
-
-
-
-
-# computes the duplicate rate between two urls
-# Inputs: the urls' kgrams
-# Output: number between 0 and 1
-def compute_duplicate_rate_between_two_urls(kgram1, kgram2):
-    return;
+def compute_duplicate_rates(urls_kgrams):
+    # computes the duplicate rate between two urls
+    # Inputs: the urls' kgrams
+    # Output: number between 0 and 1
+    def compute_duplicate_rate_between_two_urls(kgram1, kgram2):
+        return;
+    raw_data = []
+    for ...
+    return raw_data;
 
 
 
@@ -171,10 +170,11 @@ def compute_duplicate_rate_between_two_urls(kgram1, kgram2):
 
 urls_kgrams = get_kgrams_from_user_inputs()
 
-raw_data = [[99, 0, 20, 80],
-                [0, 100, 0, 50], 
-                [20, 0, 100, 0],
-                [80, 50, 0, 100]]
+raw_data = compute_duplicate_rates(urls_kgrams)
+#raw_data = [["", 0.79, 0.8, 80],
+ #               [0, 100, 0, 50], 
+  #              [0.9, 0, 100, 0],
+   #             [80, 50, 0, 100]]
 
 make_output(raw_data)
 
