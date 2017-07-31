@@ -9,7 +9,7 @@ import re
 #init
 urls = []
 url = "init"
-punc = string.punctuation.join(["»", "©"])
+punc = string.punctuation.join(["»", "©", '\xa0'])
 
 
 #dictionary (url -> [k-grams])
@@ -34,7 +34,6 @@ for url in urls :
     texts = soup.findAll(string=lambda text:isinstance(text,Comment))
     [comment.extract() for comment in texts]
     texts = soup.findAll(text=True)
-    texts.enco
 
     #filter
     def visible(element):
