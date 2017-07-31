@@ -35,18 +35,14 @@ for url in urls :
     [comment.extract() for comment in texts]
     texts = soup.findAll(text=True)
 
+    print(texts)
+    print("=================================================")
     #filter
     def visible(element):
         el = str (element)
-        if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
+        if element.parent.name in ['style', 'script', 'head', 'title']:
             return False
         elif re.match('<!--*-->', el):
-            return False
-        elif re.match('\n', el):
-            return False
-        elif re.match('  +', el):
-            return False
-        elif re.match('/\*', el):
             return False
         return True
 
@@ -54,7 +50,8 @@ for url in urls :
     lst = list(visible_texts)
 
     #concat
-    fulltxt = ' '.join(lst);
+    fulltxt = " ".join(" ".join(lst).split());
+    print(fulltxt)
 
     #remove punctuation
     predicate = lambda x:x not in punc
@@ -63,8 +60,6 @@ for url in urls :
     #concat again
     fulltxtwp = ''.join(fulltxtwp)
 
-    #remove extra spaces
-    fulltxtwp = re.sub(' +', ' ', fulltxtwp)
 
     #extract grams
     grams =  ngrams(fulltxtwp.split(' '), kgram)
