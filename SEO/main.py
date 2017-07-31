@@ -1,6 +1,7 @@
 from nltk.corpus import stopwords
 from nltk import ngrams
 from bs4 import BeautifulSoup
+from bs4 import Comment
 from urllib.request import urlopen
 import string
 import re
@@ -30,14 +31,17 @@ while True  :
 for url in urls :
     html = urlopen(url)
     soup = BeautifulSoup(html, 'html.parser')
+    texts = soup.findAll(string=lambda text:isinstance(text,Comment))
+    [comment.extract() for comment in texts]
     texts = soup.findAll(text=True)
+    texts.enco
 
     #filter
     def visible(element):
         el = str (element)
         if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
             return False
-        elif re.match('<!--.*-->', el):
+        elif re.match('<!--*-->', el):
             return False
         elif re.match('\n', el):
             return False
@@ -70,5 +74,5 @@ for url in urls :
 
 #display
 for pages in pagesGrams :
-    for gram in grams :
+    for gram in pagesGrams[pages] :
         print(gram)
