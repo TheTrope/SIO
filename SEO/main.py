@@ -31,9 +31,10 @@ while True  :
 for url in urls :
     html = urlopen(url)
     soup = BeautifulSoup(html, 'html.parser')
-    texts = soup.findAll(string=lambda text:isinstance(text,Comment))
+    texts = soup.find_all(string=lambda text:isinstance(text,Comment))
     [comment.extract() for comment in texts]
-    texts = soup.findAll(text=True)
+    texts = soup.find_all(text=True)
+
 
     print(texts)
     print("=================================================")
