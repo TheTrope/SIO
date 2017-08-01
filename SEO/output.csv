@@ -1,0 +1,6 @@
+URL 1: https://aws.amazon.com/
+URL 2: https://www.amazon.com/ap/signin?openid.assoc_hand (...)
+
+,URL 1,URL 2
+URL 1,X,0.0030048076923076925
+URL 2,X,X
