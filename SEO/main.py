@@ -27,7 +27,7 @@ SKETCH_SIZE_PERCENTAGE = 0.25
 
 # Get the single size from user input
 def get_user_shingle_parameter_input():
-    return int(input("Shingle size parameter? : "));
+    return int(input("Shingle size parameter? (int): "));
 
 # Get urls from user input
 def get_user_urls_inputs():
@@ -36,11 +36,14 @@ def get_user_urls_inputs():
     #input urls
     print("Enter some urls, Empty string to stop")
     url_input_loop_count = 0
-    while True  : 
+    while True  :
         url_input_loop_count += 1
         url = input("Url " + str(url_input_loop_count) + ": ")
         if len(url) == 0 :
             break
+        if (not re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', url)) :
+            print("Url must start with http://")
+            continue
         urls.append(url)
     return urls;
 
@@ -192,7 +195,7 @@ def compute_duplicate_rates(urls, kgrams):
 
         return common_shingle_found / (shingle_number - common_shingle_found);
 
-    
+
     raw_data = []
 
     loop1_count = 0
