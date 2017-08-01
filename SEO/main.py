@@ -11,48 +11,43 @@ from reportlab.lib.styles import getSampleStyleSheet
 import csv
 import string
 import re
+import random
 
 ############################
 ############################    GLOBAL VARIABLES
 ############################
 
-SKETCH_SIZE_MINIMUM = 200
-SKETCH_SIZE_MAXIMUM_PERCENTAGE = 0.25
+SKETCH_SIZE_THRESHOLD = 200
+SKETCH_SIZE_PERCENTAGE = 0.25
 
 
 ############################
 ############################    INPUT
 ############################
 
-# Get k-grams for every url the user inputs
-def get_kgrams_from_user_inputs():
-    #init
+# Get the single size from user input
+def get_user_shingle_parameter_input():
+    return int(input("Shingle size parameter? : "));
+
+# Get urls from user input
+def get_user_urls_inputs():
     urls = []
-    url = "init"
-    punc = string.punctuation.join(["»", "©", '\xa0'])
-
-    #dictionary (url -> [k-grams])
-    urls_kgrams = {}
-
-
-    #input shingle size parameter
-    shingle_size = 3#int(input("Shingle size parameter? : "))
-
-    #DELETEME
-    #urls.append("https://www.amazon.com/ap/signin?openid.assoc_handle=aws&openid.return_to=https%3A%2F%2Fsignin.aws.amazon.com%2Foauth%3Fresponse_type%3Dcode%26client_id%3Darn%253Aaws%253Aiam%253A%253A015428540659%253Auser%252Fhomepage%26redirect_uri%3Dhttps%253A%252F%252Fconsole.aws.amazon.com%252Fconsole%252Fhome%253Fstate%253DhashArgs%252523%2526isauthcode%253Dtrue%26noAuthCookie%3Dtrue&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&action=&disableCorpSignUp=&clientContext=&marketPlaceId=&poolName=&authCookies=&pageId=aws.ssop&siteState=registered%2Cen_US&accountStatusPolicy=P1&sso=&openid.pape.preferred_auth_policies=MultifactorPhysical&openid.pape.max_auth_age=120&openid.ns.pape=http%3A%2F%2Fspecs.openid.net%2Fextensions%2Fpape%2F1.0&server=%2Fap%2Fsignin%3Fie%3DUTF8&accountPoolAlias=&forceMobileApp=0&language=en_US&forceMobileLayout=0")
-    #urls.append("https://aws.amazon.com/")
-    urls.append("file:///home/franzzy/Workspace/python/SEO/SEO/one.html")
-    urls.append("file:///home/franzzy/Workspace/python/SEO/SEO/two.html")
 
     #input urls
-    #print("Enter some urls, Empty string to stop")
-    #url_input_loop_count = 0
-    #while True  : 
-    #    url_input_loop_count += 1
-    #    url = input("Url " + str(url_input_loop_count) + ": ")
-    #    if len(url) == 0 :
-    #        break
-    #    urls.append(url)
+    print("Enter some urls, Empty string to stop")
+    url_input_loop_count = 0
+    while True  : 
+        url_input_loop_count += 1
+        url = input("Url " + str(url_input_loop_count) + ": ")
+        if len(url) == 0 :
+            break
+        urls.append(url)
+    return urls;
+
+# Get k-grams for every url the user has input
+def get_kgrams_from_urls(urls, shingle_size):
+    punc = string.punctuation.join(["»", "©", '\xa0'])
+    urls_kgrams = []
 
     #For each url, get corresponding k-grams
     for url in urls :
@@ -85,15 +80,8 @@ def get_kgrams_from_user_inputs():
         fulltxtwp = ''.join(fulltxtwp)
 
         #extract grams
-        grams =  ngrams(fulltxtwp.split(' '), shingle_size)
-        urls_kgrams[url] = grams
-
-
-    #display
-    """for pages in urls_kgrams :
-        for gram in urls_kgrams[pages] :
-            print(gram)"""
-
+        grams =  list(ngrams(fulltxtwp.split(' '), shingle_size))
+        urls_kgrams.append(grams)
 
 
     return urls_kgrams;
@@ -106,17 +94,7 @@ def get_kgrams_from_user_inputs():
 ############################
 
 # Create output files from calculated duplicate rate bewteen the urls
-def make_output(raw_data):
-    
-    # Sets output's content from raw duplicate rate data
-    data = raw_data
-    header = [""]
-    for x in range(len(data)):
-        s = "URL " + str(x + 1)
-        header.append(s)
-        data[x].insert(0, s)
-    data.insert(0, header)
-
+def make_output(raw_data, urls):
     def make_csv(data):
         # Write csv with column & row names
         with open("output.csv", "w", newline = "") as f:
@@ -124,13 +102,15 @@ def make_output(raw_data):
             writer.writerows(data)
         return;
 
-    def make_pdf(data):
+    def make_pdf(data, number_of_lines_to_skip):
         # Define a style for the entire table
         style = TableStyle([('ALIGN',(1,1),(-1,-1),'RIGHT'),
-                               ('TEXTCOLOR',(0,0),(0,-1),colors.blue),
-                               ('TEXTCOLOR',(0,0),(-1,0),colors.blue),
-                               ('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
-                               ('BOX', (0,0), (-1,-1), 0.25, colors.black),
+                               ('TEXTCOLOR',(0, number_of_lines_to_skip),(0,-1),colors.blue),
+                               ('TEXTCOLOR',(0, number_of_lines_to_skip),(-1,number_of_lines_to_skip),colors.blue),
+                               ('INNERGRID', (0, number_of_lines_to_skip), (-1,-1), 0.25, colors.black),
+                               ('BOX', (1, number_of_lines_to_skip + 1), (-1, -1), 0.25, colors.black),
+                               ('BOX', (1, number_of_lines_to_skip), (-1, number_of_lines_to_skip), 1, colors.black),
+                               ('BOX', (0, number_of_lines_to_skip + 1), (0, -1), 1, colors.black),
                                ])
 
         # Create table from data and assign the style we defined
@@ -138,10 +118,9 @@ def make_output(raw_data):
         t.setStyle(style)
 
         # Colour according to values.
-        # x > 0 && Y > 0 are so we don't parse row / column names
         for x in range(len(data)):
             for y in range(len(data[x])):
-                if (x > 0 and y > 0 and str(data[x][y]) != "X" and float(data[x][y]) >= 0.8):
+                if (x > number_of_lines_to_skip and y > 0 and str(data[x][y]) != "X" and float(data[x][y]) >= 0.8):
                     t.setStyle(TableStyle([('TEXTCOLOR', (y, x), (y, x), colors.red)]))
 
         doc = SimpleDocTemplate("output.pdf", pagesize=A4, rightMargin=30,leftMargin=30, topMargin=30,bottomMargin=18)
@@ -151,8 +130,24 @@ def make_output(raw_data):
         doc.build(elements) # This writes to disk in the current directory.
         return;
 
+    # Set output's content from raw duplicate rate data
+    data = raw_data
+    # add line and column names
+    header = [""]
+    for x in range(len(data)):
+        s = "URL " + str(x + 1)
+        header.append(s)
+        data[x].insert(0, s)
+    data.insert(0, header)
+
+    # add list of urls
+    for i in range(len(urls)):
+        data.insert(i, ["URL " + str(i + 1) + ": " + (urls[i] if len(urls[i]) <= 50 else (urls[i][:50] + " (...)"))])
+    data.insert(len(urls), [""])
+
+    #render
     make_csv(data)
-    make_pdf(data)
+    make_pdf(data, len(urls) + 1)
 
     return;
 
@@ -162,73 +157,58 @@ def make_output(raw_data):
 ############################    COMPUTATION
 ############################
 
-def compute_duplicate_rates(urls_kgrams):
+def compute_duplicate_rates(urls, kgrams):
 
     # For time optimisation purposes we only keep a randomly chosen subset of all the shingles, called sketches
-    def get_urls_sketches(urls_kgrams):
-        return;
+    def get_url_sketch(shingle):
+        shingle_size = len(shingle)
+        if shingle_size <= SKETCH_SIZE_THRESHOLD:
+            return shingle
+        elif shingle_size * SKETCH_SIZE_PERCENTAGE <= SKETCH_SIZE_THRESHOLD:
+            return random.sample(shingle, SKETCH_SIZE_THRESHOLD)
+        else :
+            return random.sample(shingle, int(shingle_size * SKETCH_SIZE_PERCENTAGE))
+
 
     # computes the duplicate rate between two urls
     # Inputs: the urls' sketches
     # Output: number between 0 and 1
-    def compute_duplicate_rate_between_two_urls(sketch1, sketch2):
-        def compare_shingles(sa, sb):
+    def compute_duplicate_rate_between_two_urls(shingles1, shingles2):
+        def shingles_are_identical(sa, sb):
             for i in range(len(sa)):
                 if sa[i] != sb[i]:
                     return False
             return True
 
+        sketch1 = get_url_sketch(shingles1)
+        sketch2 = get_url_sketch(shingles2)
+
         common_shingle_found = 0
-        shingle_number = 0
-        sketch2_size_counted = False
-        for x in sketch1:
-            shingle_number += 1
-            for y in sketch2:
-                if sketch2_size_counted == False:
-                    shingle_number += 1
-                if compare_shingles(x, y):
+        shingle_number = len(sketch1) + len(sketch2)
+        for x in shingles1:
+            for y in shingles2:
+                if shingles_are_identical(x, y):
                     common_shingle_found += 1
-                else :
-                    print("==")
-                    print(x)
-                    print(y)
-            sketch2_size_counted = True
 
+        return common_shingle_found / (shingle_number - common_shingle_found);
 
-
-
-
-        print(common_shingle_found)
-        print(shingle_number)
-
-        return 2#common_shingle_found / (shingle_number - common_shingle_found);
-
-
-
-    urls_sketches = urls_kgrams #get_urls_sketches(urls_kgrams)
+    
     raw_data = []
 
-
     loop1_count = 0
-    for url1, sketch1 in urls_sketches.items():
+    for shingles1 in kgrams:
         loop1_count += 1
         line = []
         loop2_count = 0
-        for url2, sketch2 in urls_sketches.items():
+        for shingles2 in kgrams:
             loop2_count += 1
             if loop2_count > loop1_count:
-                line.insert(loop2_count - 1, compute_duplicate_rate_between_two_urls(sketch1, sketch2))
+                line.insert(loop2_count - 1, compute_duplicate_rate_between_two_urls(shingles1, shingles2))
             else :
                 line.insert(loop2_count - 1, "X")
         raw_data.append(line)
 
-
-
     return raw_data;
-
-
-
-
 
 
 
@@ -236,12 +216,14 @@ def compute_duplicate_rates(urls_kgrams):
 ############################    MAIN
 ############################
 
+# User inputs
+shingle_size = get_user_shingle_parameter_input()
+urls = get_user_urls_inputs()
+# Compute corresponding k-grams
+kgrams = get_kgrams_from_urls(urls, shingle_size)
+# Compute duplication rate matrix data
+raw_data = compute_duplicate_rates(urls, kgrams)
+# Make output
+make_output(raw_data, urls)
 
-urls_kgrams = get_kgrams_from_user_inputs()
-
-
-raw_data = compute_duplicate_rates(urls_kgrams)
-
-make_output(raw_data)
-
-print("END")
+print("DONE")
