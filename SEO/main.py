@@ -27,7 +27,12 @@ SKETCH_SIZE_PERCENTAGE = 0.25
 
 # Get the single size from user input
 def get_user_shingle_parameter_input():
-    return int(input("Shingle size parameter? (int): "));
+    try :
+        sh = int(input("Shingle size parameter? (int > 1): "));
+        assert(sh > 1)
+    except :
+        print("Size must be an int > 1")
+        get_user_shingle_parameter_input()
 
 # Get urls from user input
 def get_user_urls_inputs():
@@ -149,8 +154,11 @@ def make_output(raw_data, urls):
     data.insert(len(urls), [""])
 
     #render
-    make_csv(data)
-    make_pdf(data, len(urls) + 1)
+    try:
+        make_csv(data)
+        make_pdf(data, len(urls) + 1)
+    except:
+        print("Error: Make sure outputs do not already exist or check their rights")
 
     return;
 
