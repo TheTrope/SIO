@@ -64,7 +64,7 @@ def get_kgrams_from_urls(urls, shingle_size):
         try:
             html = urlopen(url)
         except:
-            print(url + "is not valid, aborted")
+            print(url + " is not valid, aborted")
             sys.exit(0);
         soup = BeautifulSoup(html, 'html.parser')
         texts = soup.find_all(string=lambda text:isinstance(text,Comment))
