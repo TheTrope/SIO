@@ -30,6 +30,7 @@ def get_user_shingle_parameter_input():
     try :
         sh = int(input("Shingle size parameter? (int > 1): "));
         assert(sh > 1)
+        return sh
     except :
         print("Size must be an int > 1")
         get_user_shingle_parameter_input()
