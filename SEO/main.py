@@ -11,6 +11,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 import csv
 import string
 import re
+import sys
 import random
 
 ############################
@@ -60,7 +61,11 @@ def get_kgrams_from_urls(urls, shingle_size):
 
     #For each url, get corresponding k-grams
     for url in urls :
-        html = urlopen(url)
+        try:
+            html = urlopen(url)
+        except:
+            print(url + "is not valid, aborted")
+            sys.exit(0);
         soup = BeautifulSoup(html, 'html.parser')
         texts = soup.find_all(string=lambda text:isinstance(text,Comment))
         [comment.extract() for comment in texts]
