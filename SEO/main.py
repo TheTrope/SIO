@@ -243,4 +243,4 @@ raw_data = compute_duplicate_rates(urls, kgrams)
 # Make output
 make_output(raw_data, urls)
 
-print("DONE, output.csv, output.pdf")
+print("DONE")
